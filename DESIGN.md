@@ -1,6 +1,6 @@
 # DESIGN.md — Testing & Personalization Hub
 
-The system every surface shares: the FX Explorer, the Backlog, and the Intake & Brief Builder. Read this with [PRODUCT.md](PRODUCT.md) (brand, voice, users, principles). **Register: product** — earned familiarity, one consistent component vocabulary across screens. The rule of thumb: *if the same control looks different on two surfaces, one of them is wrong.*
+The system every surface shares: the FX Explorer, the Roadmap, the Intake & Brief Builder, and the Results & Revenue Explorer. Read this with [PRODUCT.md](PRODUCT.md) (brand, voice, users, principles). **Register: product** — earned familiarity, one consistent component vocabulary across screens. The rule of thumb: *if the same control looks different on two surfaces, one of them is wrong.*
 
 Tokens live in `tailwind.config.js` (loaded into Tailwind v4 via `@config` in `src/app/globals.css`). **Never hardcode hex in components** — use the tokens below.
 

@@ -388,7 +388,7 @@ Inline SVG only — no icon font/library. `viewBox="0 0 24 24"`, `fill="none"`,
 
 ## 9. Appendix — Tailwind reference (same-stack teams)
 
-Source stack: React 18 + Vite + Tailwind 3.4 (no UI library). Drop this into
+Reference stack: React + Tailwind (no UI library); this product uses Tailwind v4 with the legacy config loaded via `@config`. Drop this into
 `tailwind.config.js` → `theme.extend`:
 
 ```js

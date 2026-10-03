@@ -52,9 +52,9 @@ This file is the persistent design brief for the **Testing & Personalization Hub
 - Corporate intranet aesthetic — flat clip-art icons, busy multi-color palettes, "newsletter" layouts.
 - Over-animated interactives — parallax for parallax's sake, every card lifting on hover, scroll-jacking, confetti.
 
-**Mode:** Light mode only. No dark-mode requirement, but Phase 5 polish should leave tokens in a state that *could* support it later (no hardcoded hex outside the theme).
+**Mode:** Light mode only. No dark-mode requirement, but tokens should stay in a state that *could* support it later (no hardcoded hex outside the theme).
 
-**Printability constraint:** the templates page must remain printable to PDF cleanly. The `@media print` rule in `index.css` should be respected and extended where needed.
+**Printability constraint:** the templates page must remain printable to PDF cleanly. The `@media print` rule in `src/app/globals.css` should be respected and extended where needed.
 
 ### Design Principles
 
@@ -72,11 +72,11 @@ These five principles guide every design decision on this project. When skills p
 
 ### Stack & Constraints (do not violate)
 
-- **Next.js 16 App Router + React 19 + Tailwind v4 + TypeScript** (re-platformed from Vite; the app is now the multi-tool "Testing & Personalization Hub"). Routes live in `src/app/*`, one folder per route. FX content pages and the Backlog are `.jsx`; the Intake tool and the typed form primitives are `.tsx` (tsconfig `allowJs`). No other framework swap.
+- **Next.js 16 App Router + React 19 + Tailwind v4 + TypeScript** (the multi-tool "Testing & Personalization Hub"). Routes live in `src/app/*`, one folder per route. FX content pages and the Roadmap are `.jsx`; the Intake and Results tools and the typed form primitives are `.tsx` (tsconfig `allowJs`). No other framework swap.
 - Tokens live in `tailwind.config.js`, loaded into Tailwind v4 via `@config` in `src/app/globals.css` (preserves the text/fill color split). **Never hardcode hex in components.** See DESIGN.md for the full system.
 - No heavy animation libraries unless a skill explicitly justifies the dependency cost. CSS transitions + small handcrafted motion, gated behind `prefers-reduced-motion`.
 - No shadcn/ui wholesale — project-native primitives in `src/components/ui/` are the shared vocabulary across every surface (see DESIGN.md).
-- FX content lives in `src/data/` — copy edits go there, never inline in page components. (The Intake tool is server-backed by Supabase + Anthropic + Jira; its data is dynamic, not in `src/data/`.)
+- FX content lives in `src/data/` — copy edits go there, never inline in page components. (The Intake, Roadmap and Results tools are server-backed by Supabase, Anthropic and Jira, with bundled synthetic snapshots as the no-credentials fallback; their data is dynamic, not in `src/data/` apart from `src/data/snapshot/`.)
 
 ### Accessibility Floor
 
@@ -90,7 +90,7 @@ Target **WCAG 2.1 AA** across the site. Known risks to verify in `audit`:
 
 ## Optimizely Doc Integration Layer
 
-Added 2026-05-15. A curated companion layer that stitches Optimizely's official Feature Experimentation documentation into the site without duplicating it.
+A curated companion layer that stitches Optimizely's official Feature Experimentation documentation into the site without duplicating it.
 
 ### Architecture
 
@@ -112,7 +112,7 @@ Added 2026-05-15. A curated companion layer that stitches Optimizely's official 
 - **Home page** — "Concepts & vocabulary" promoted out of the role list into a distinct `bg-subtle` callout block with `✶` mark, `REFERENCE LAYER` eyebrow, and dark-on-hover treatment. Reads as a different surface, not a sixth role.
 - **Process / Roles / Templates detail views** — each renders a `DocRefPanel` near the bottom of its phase/role/template content.
 
-### Motion Primitives (`src/index.css`)
+### Motion Primitives (`src/app/globals.css`)
 
 All gated behind `motion-safe:` (reduced-motion users see static state):
 

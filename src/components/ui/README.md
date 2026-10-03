@@ -1,6 +1,6 @@
 # UI Primitives
 
-Project-native primitives for the Testing & Personalization Hub. Built in Phase 1 of the design overhaul (`extract` skill). All components consume tokens from `tailwind.config.js` — never hardcode hex values, never inline tracking like `tracking-[0.18em]`, use these instead.
+Project-native primitives for the Testing & Personalization Hub. All components consume tokens from `tailwind.config.js` — never hardcode hex values, never inline tracking like `tracking-[0.18em]`, use these instead.
 
 ```js
 import { Eyebrow, Button, Card, Badge, Callout, SectionHeader, PageHeader, Tabs, Tab } from '../components/ui';
@@ -164,6 +164,6 @@ The child of a `Tab` can be a render-prop function that receives `{ active }` so
 - Buttons have `focus-visible:ring-2 ring-lime ring-offset-2`.
 - Tabs implement the WAI-ARIA tab pattern (tablist, tab, aria-selected, arrow-key nav, roving tabIndex).
 - All interactive primitives default to `type="button"` (no accidental form submission).
-- The `.accent-underline` rule lives in `index.css` and is honored by both `PageHeader` and `SectionHeader`.
+- The `.accent-underline` rule lives in `src/app/globals.css` and is honored by both `PageHeader` and `SectionHeader`.
 
-The `audit` skill in Phase 2 will go deeper on contrast and semantic HTML. The primitives above are deliberately conservative — they give the next phases a solid floor.
+Contrast and semantic HTML should still be audited per page. The primitives above are deliberately conservative — they give new surfaces a solid floor.
