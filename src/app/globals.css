@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+/* Tailwind v4 loads the project's design tokens from the legacy JS config so the
+   WCAG-tuned color split (text-muted/text-subtle ≠ bg-muted/border-muted) and the
+   semantic font-size scale (text-h1, text-display, text-eyebrow…) carry over with
+   zero className changes. Phase 2 can reconcile this with Intake's @theme tokens. */
+@config "../../tailwind.config.js";
+
+:root {
+  --color-lime: #b1ff33;
+  --color-charcoal: #38353f;
+  --color-charcoal-alt: #35323d;
+  --color-ink: #212529;
+  --color-muted: #c3c2c5;
+  --color-subtle: #f7f7f7;
+}
+
+/* Base element resets live in @layer base so Tailwind's text-color utilities
+   (in @layer utilities, which cascades later) win over `a { color: inherit }`.
+   Without the layer, this unlayered rule overrides every text-color utility on
+   anchors — e.g. an active nav tab's `text-charcoal` loses to inherited white. */
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  /* Offset route-change and anchor scrolls by the sticky header's height so
+     content lands below the nav, not hidden behind it. HubNav keeps --hub-nav-h
+     in sync with the real (variable) header height; the fallback covers the
+     tallest two-row header before hydration. */
+  html {
+    scroll-padding-top: var(--hub-nav-h, 7.25rem);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* Utility: lime underline accent for headings — placed flag, not a hint */
+.accent-underline::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 6px;
+  background: var(--color-lime);
+  margin-top: 14px;
+  border-radius: 3px;
+}
+
+/* Eyebrow kicker (class form, used by the Intake tool; FX uses the text-eyebrow utility) */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+/* Lime-tint callout: full hairline border + tint (no side-stripe). Used by Intake. */
+.callout-lime {
+  background: color-mix(in srgb, var(--color-lime) 9%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-lime) 45%, transparent);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+/* Focus ring — load-bearing for accessibility. Used by Intake interactive elements. */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-lime);
+}
+
+/* Subtle scroll for code blocks */
+pre {
+  overflow-x: auto;
+}
+
+/* Motion: easing tokens — cubic deceleration curves only.
+   No bounce, no elastic, no spring. */
+:root {
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* All animations gated to no-preference so reduced-motion users see
+   end-state immediately without any keyframe interpolation. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Typing indicator + spinner — used by the Intake chat/loading states. */
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .typing-dot {
+    animation: typing-bounce 1.2s var(--ease-out-quart) infinite;
+  }
+  .spinner {
+    animation: spin 0.7s linear infinite;
+  }
+
+  /* Quiet "ready" pulse — applied to the Decide CTA when 7/7 answered. */
+  .ready-pulse {
+    animation: ready-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes ready-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(177, 255, 51, 0.55);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(177, 255, 51, 0);
+    }
+  }
+
+  /* Fade-up entrance — used for the Decide result panel reveal. */
+  .animate-fade-up {
+    animation: fade-up 0.35s var(--ease-out-quart) both;
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Fade-in — used for the Decide answer rationale reveal. */
+  .animate-fade-in {
+    animation: fade-in 0.22s var(--ease-out-quart) both;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Page-header entrance: eyebrow, heading, intro fade-up with stagger.
+     Applied to direct children via .animate-page-enter. The first child
+     enters at 0ms, second at 80ms, third at 160ms. */
+  .animate-page-enter > * {
+    animation: fade-up 0.5s var(--ease-out-quart) both;
+  }
+  .animate-page-enter > *:nth-child(1) { animation-delay: 0ms; }
+  .animate-page-enter > *:nth-child(2) { animation-delay: 80ms; }
+  .animate-page-enter > *:nth-child(3) { animation-delay: 160ms; }
+
+  /* Tooltip enter — 4px slide-down + fade. Anchored to the trigger below it.
+     Used by GlossaryTerm popover. */
+  .animate-tooltip-in {
+    animation: tooltip-in 0.16s var(--ease-out-quart) both;
+  }
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Deep-link pulse — single-iteration ring expansion that lands the eye on
+     a freshly-deep-linked card (e.g. /concepts#bucketing). Calm: one cycle, slow. */
+  .animate-deep-link-pulse {
+    animation: deep-link-pulse 1.4s var(--ease-out-quart) 1 both;
+  }
+  @keyframes deep-link-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(177, 255, 51, 0.7);
+    }
+    60% {
+      box-shadow: 0 0 0 10px rgba(177, 255, 51, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(177, 255, 51, 0);
+    }
+  }
+}
+
+/* Accordion expand via grid-template-rows trick. The wrapper interpolates
+   between 0fr and 1fr, and the inner div has overflow:hidden. This is one
+   of the very few CSS-only ways to animate to height:auto. */
+.accordion {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s var(--ease-out-quart);
+}
+.accordion.is-open {
+  grid-template-rows: 1fr;
+}
+.accordion > .accordion-inner {
+  overflow: hidden;
+}
+
+/* Global reduced-motion gate — zeros out animation/transition durations
+   and disables smooth scrolling for users with the preference set. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles for templates */
+@media print {
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  pre {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #333 !important;
+    box-shadow: none !important;
+  }
+}
